@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Enter Your Tweet</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.content.label }}<br>
+            {{ form.content(cols="60", rows="8") }}
+            {% for error in form.content.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.likes.label }}<br>
+            {{ form.likes() }}
+            {% for error in form.likes.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.shares.label }}<br>
+            {{ form.shares() }}
+            {% for error in form.shares.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.datetime.label }}<br>
+           {{ form.datetime() }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
