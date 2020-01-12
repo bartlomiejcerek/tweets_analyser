@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<html>
+    <head>
+    </head>
+    <body>
+        <h1 style="font-size:200%; text-align:center;" >Welcome Stranger, what You desire to do?</h1>
+        <img align = "left" height = 200 width = 400 src="{{url_for('static', filename='welcome1.jpg')}}" />
+        <img align = "right" height = 200 width = 400 src="{{url_for('static', filename='welcome2.png')}}" />
+        
+        <br>
+        <br>
+        <br>
+        <div align = "center" style="font-size:150%; text-align:center;"> <a href="/auto">Automatic Test</a> </div>
+        <div align = "center" style="font-size:150%; text-align:center;"> <a href="{{ url_for('manual') }}">How Justin Are YOU?</a> </div>
+
+    </body>
+</html>
+{% endblock %}
+
