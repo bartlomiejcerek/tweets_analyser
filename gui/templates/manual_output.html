@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<html>
+    <head>
+    </head>
+    <body>
+        <h1 style="font-size:200%; text-align:center;" >Manual Output</h1>
+        <br>
+        <br>
+        
+        {% for table in tables %}
+            {{ table|safe }}
+        {% endfor %}
+
+    </body>
+</html>
+{% endblock %}
