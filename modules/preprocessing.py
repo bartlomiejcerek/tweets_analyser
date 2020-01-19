@@ -71,23 +71,23 @@ import pickle
 
 
 #Create data frame
-tweets_raw = pd.read_csv('../data/tweets.csv')
-print("Number of tweets and their features: ", tweets_raw.shape)
-tweets_raw.head()
+#tweets_raw = pd.read_csv('../data/tweets.csv')
+#print("Number of tweets and their features: ", tweets_raw.shape)
+#tweets_raw.head()
 
 
 # In[914]:
 
 
 #Show general info
-tweets_raw.info()
+#tweets_raw.info()
 
 
 # In[915]:
 
 
 #Tweets per person 
-tweets_raw['author'].value_counts()
+#tweets_raw['author'].value_counts()
 
 
 # In[916]:
@@ -97,9 +97,9 @@ tweets_raw['author'].value_counts()
 # 198 contains two #
 # 114 contains two https
 
-tweet_nr = 149
-tweet = tweets_raw['content'][tweet_nr]
-print(tweet)
+#tweet_nr = 149
+#tweet = tweets_raw['content'][tweet_nr]
+#print(tweet)
 
 
 # In[917]:
@@ -440,8 +440,22 @@ def add_padding(list_to_extend, basic_len, extended_len):
 # In[951]:
 
 
-def transform_row(text, author, nr_of_shares, nr_of_likes, date_time, tokenizer_long, tokenizer_short, char_codes, max_words_nr_long, max_words_nr_short, max_chars_nr_long, padding):
+def transform_row(tweet_param_dict, data_param_dict, padding):
     "takes tweet text, nr of shares and nr of likes and returns extracted features"
+    #unpack dictionaries
+    text = tweet_param_dict["text"]
+    author = tweet_param_dict["author"]
+    nr_of_shares = tweet_param_dict["nr_of_shares"]
+    nr_of_likes = tweet_param_dict["nr_of_likes"]
+    date_time = tweet_param_dict["date_time"]
+    tokenizer_long = data_param_dict["tokenizer_long"]
+    tokenizer_short = data_param_dict["tokenizer_short"]
+    char_codes = data_param_dict["char_codes"]
+    max_words_nr_long = data_param_dict["max_words_nr_long"]
+    max_words_nr_short = data_param_dict["max_words_nr_short"]
+    max_chars_nr_long = data_param_dict["max_chars_nr_long"]
+    
+    #get features
     nr_of_letters = count_letters(text)
     urls_list = find_urls(text)
     urls_nr = len(urls_list)
@@ -485,7 +499,9 @@ def transform_row(text, author, nr_of_shares, nr_of_likes, date_time, tokenizer_
         author = 1
     else:
         author = 0
-    return [author, encoded_tweet_long, encoded_tweet_short, encoded_tweet_chars, nr_of_letters, urls_nr, hashtag_nr, mentioned_nr,             exclamations_nr, emojis_nr, perc_of_upper, nr_of_words, average_word_len,             std_dev_word_len, min_word_len, max_word_len, time, weekday]
+    return [author, encoded_tweet_long, encoded_tweet_short, encoded_tweet_chars, nr_of_letters, urls_nr, hashtag_nr, mentioned_nr, \
+            exclamations_nr, emojis_nr, perc_of_upper, nr_of_words, average_word_len, \
+            std_dev_word_len, min_word_len, max_word_len, time, weekday]
 
 
 # In[952]:
@@ -507,15 +523,20 @@ def get_data_parameters(tweets_raw):
 
 def transform(tweets_raw):
     tweets_parameters = get_data_parameters(tweets_raw)
-    tokenizer_long = tweets_parameters['tokenizer_long']
-    tokenizer_short = tweets_parameters['tokenizer_short']
-    char_codes = tweets_parameters['char_codes']
-    max_words_nr_long = tweets_parameters['max_words_nr_long']
-    max_words_nr_short = tweets_parameters['max_words_nr_short']
-    max_chars_nr_long = tweets_parameters['max_chars_nr_long']
     #print(tokenizer_short.word_index)
-    features_list = [transform_row(row['content'], row['author'], row['number_of_shares'], row['number_of_likes'], row['date_time'], tokenizer_long, tokenizer_short, char_codes, max_words_nr_long, max_words_nr_short, max_chars_nr_long, True)         for index, row in tweets_raw[:nr_of_tweets].iterrows()]
-    return pd.DataFrame(features_list, columns = ['author', 'encoded_tweet_long', 'encoded_tweet_short', 'encoded_tweet_chars', 'nr_of_letters', 'urls_nr',                                                   'hashtag_nr', 'mentioned_nr', 'exclamations_nr', 'emojis_nr', 'perc_of_upper',                                                   'nr_of_words', 'average_word_len', 'std_dev_word_len', 'min_word_len', 'max_word_len',                                                   'time', 'weekday']) 
+    features_list = []
+    for index, row in tweets_raw.iterrows():
+        tweet_param_dict = {}
+        tweet_param_dict["text"] = row['content']
+        tweet_param_dict["author"] = row['author']
+        tweet_param_dict["nr_of_shares"] = row['number_of_shares']
+        tweet_param_dict["nr_of_likes"] = row['number_of_likes']
+        tweet_param_dict["date_time"] = row['date_time']
+        features_list.append(transform_row(tweet_param_dict, tweets_parameters, True))
+    return pd.DataFrame(features_list, columns = ['author', 'encoded_tweet_long', 'encoded_tweet_short', 'encoded_tweet_chars', 'nr_of_letters', 'urls_nr', \
+                                                  'hashtag_nr', 'mentioned_nr', 'exclamations_nr', 'emojis_nr', 'perc_of_upper', \
+                                                  'nr_of_words', 'average_word_len', 'std_dev_word_len', 'min_word_len', 'max_word_len', \
+                                                  'time', 'weekday']) 
 
 
 # In[954]:
@@ -552,3 +573,16 @@ def calculate_parameters_and_write_to_file(tweets_raw):
     pickle.dump(tweets_parameters, file)
     # close the file
     file.close()
+    
+############# USAGE EXAMPLE ####################
+'''which_tweet = 4
+tweet_param_dict = {}
+tweet_param_dict["text"] = tweets_raw['content'][which_tweet]
+tweet_param_dict["author"] = tweets_raw['author'][which_tweet]
+tweet_param_dict["nr_of_shares"] = tweets_raw['number_of_shares'][which_tweet]
+tweet_param_dict["nr_of_likes"] = tweets_raw['number_of_likes'][which_tweet]
+tweet_param_dict["date_time"] = tweets_raw['date_time'][which_tweet]
+
+data_param_dict = get_data_parameters(tweets_raw)
+
+transform_row(tweet_param_dict, data_param_dict, True)'''
