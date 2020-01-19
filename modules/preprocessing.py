@@ -553,7 +553,7 @@ def transform(tweets_raw):
 
 # In[955]:
 
-def tranform_and_write_to_file(tweets_raw)
+def tranform_and_write_to_file(tweets_raw):
     feature_df = transform(tweets_raw)
     # open a file, where you want to store the data
     file = open('../data/tweets_features', 'wb')
