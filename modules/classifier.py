@@ -40,7 +40,12 @@ justin_sample = feature_df[feature_df['author'] == 'justinbieber']
 sample = pd.concat([not_justin_sample, justin_sample])
 
 # sample = pd.DataFrame(np.hstack((not_justin_sample, justin_sample))index=np.hstack((not_justin_sample.index, justin_sample.index)))
-X = change_str_col_with_list_type(sample['encoded_tweet_short'])
+
+##Features
+file_feature = open('../data/tweets_features', 'rb')
+X = pickle.load(file_feature)
+
+#X = change_str_col_with_list_type(sample['encoded_tweet_short'])
 y = sample['author']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=3)
