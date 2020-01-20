@@ -150,19 +150,28 @@ print('Accuracy: {:.2f}%'.format(acc6*100))
 fig, ax = plt.subplots(figsize=(8,6), dpi = 100)
 ax = sns.heatmap(cm6, annot=True, ax = ax, fmt='.2f')
 
+#saving the models
+import pickle
+clfP=pickle.dumps(clf)
+clfP2=pickle.dumps(clf2)
+clfP3=pickle.dumps(clf3)
+clfP4=pickle.dumps(clf4)
+clfP5=pickle.dumps(clf5)
+
+
 def predict_tweet(vector, classifier_type):
   # X_to_predict = change_str_col_with_list_type(vector['encoded_tweet_short'])
   X_to_predict = np.array(ast.literal_eval(vector)).reshape(1,26)
   if classifier_type == 'bayes':
-    classifier = clf
+    classifier = pickle.load(clfP)
   elif classifier_type == 'linearSVC':
-    classifier = clf2   
+    classifier = pickle.load(clfP2)   
   elif classifier_type == 'kneighbors':
-    classifier = clf3
+    classifier = pickle.load(clfP3)
   elif classifier_type == 'rbfSVC':
-    classifier = clf4
+    classifier = pickle.load(clfP4)
   elif classifier_type == 'randomForest':
-    classifier = clf
+    classifier = pickle.load(clfP5)
   prediction= classifier.predict(X_to_predict)
   return prediction
 
