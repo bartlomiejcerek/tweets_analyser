@@ -4,6 +4,7 @@ import io
 import pandas as pd
 import numpy as np
 import time
+import pickle
 
 #Just for colab
 #from google.colab import files
@@ -156,7 +157,6 @@ fig, ax = plt.subplots(figsize=(8,6), dpi = 100)
 ax = sns.heatmap(cm6, annot=True, ax = ax, fmt='.2f')
 
 #saving the models
-import pickle
 clfP=pickle.dumps(clf,open('clf.sav', 'wb'))
 clfP2=pickle.dumps(clf2,open('clf2.sav', 'wb'))
 clfP3=pickle.dumps(clf3,open('clf3.sav', 'wb'))
