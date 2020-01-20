@@ -152,11 +152,11 @@ ax = sns.heatmap(cm6, annot=True, ax = ax, fmt='.2f')
 
 #saving the models
 import pickle
-clfP=pickle.dumps(clf)
-clfP2=pickle.dumps(clf2)
-clfP3=pickle.dumps(clf3)
-clfP4=pickle.dumps(clf4)
-clfP5=pickle.dumps(clf5)
+clfP=pickle.dumps(clf,open(clf, 'wb'))
+clfP2=pickle.dumps(clf2,open(clf2, 'wb'))
+clfP3=pickle.dumps(clf3,open(clf3, 'wb'))
+clfP4=pickle.dumps(clf4,open(clf4, 'wb'))
+clfP5=pickle.dumps(clf5,open(clf5, 'wb'))
 
 
 def predict_tweet(vector, classifier_type):
