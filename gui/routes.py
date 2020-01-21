@@ -2,10 +2,12 @@
 from gui import app
 from flask import render_template, url_for, session, flash, redirect
 from gui.forms import ManualForm
+from modules.preprocessing import transform_row
 
 #Datamanagment
 import numpy as np 
 import pandas as pd
+import pickle
 
 
 @app.route('/')
@@ -28,10 +30,35 @@ def manual():
     
 @app.route('/manaul_output')
 def manual_output():
+    titles = ['NaN', 'Raw Data', 'Processed']
+    
     form_dict = session.get('form', None)
+    raw_df = pd.DataFrame(form_dict, index=[0])
     
-    df = pd.DataFrame(form_dict, index=[0])
-    titles = ['NaN', 'Raw Data']
+    print(str(raw_df['datetime'][0]))
     
-    return render_template('manual_output.html', tables=[df.to_html()], titles =titles)
+    #Tweet transform
+    file = open('data/tweets_parameters', 'rb')
+
+    # dump information to that file
+    tweets_parameters = pickle.load(file)
+    padding = True
+    
+    #Make my tweet
+    my_tweet_parameters = {}
+    my_tweet_parameters["text"] = str(raw_df['content'][0])
+    my_tweet_parameters["author"] = None
+    my_tweet_parameters["nr_of_shares"] = int(raw_df['shares'][0])
+    my_tweet_parameters["nr_of_likes"] = int(raw_df['likes'][0])
+    my_tweet_parameters["date_time"] = "12/01/2018 19:52"
+      
+    trasformed_tweet = transform_row(my_tweet_parameters, tweets_parameters, padding)
+    trasformed_tweet = [str(i) for i in trasformed_tweet[1:]]
+    
+    par_names = ['en_long', 'en_short', 'no', 'urls','hashtags','ment','exc','emoj','perc_upp','words','avg lne','sdt_dev_len','min','max','time','day']
+    
+    tweet_dict = dict(zip(par_names,trasformed_tweet))
+    tweet_df = pd.DataFrame(data =tweet_dict, index=[0])
+    
+    return render_template('manual_output.html', tables=[raw_df.to_html(), tweet_df.to_html()], titles = titles)
     

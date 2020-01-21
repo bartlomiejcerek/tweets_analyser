@@ -6,6 +6,7 @@ Created on Sun Jan 19 16:54:49 2020
 """
 
 import pickle
+import pandas as pd
 from modules.preprocessing import transform_row
 #from modules.classifires import predict_tweet
 
@@ -24,11 +25,18 @@ my_tweet_parameters["text"] = "Thats my new tweet that can contain new words lik
 my_tweet_parameters["author"] = None
 my_tweet_parameters["nr_of_shares"] = 999
 my_tweet_parameters["nr_of_likes"] = 111
-my_tweet_parameters["date_time"] = "12/01/2017 19:52"
+my_tweet_parameters["date_time"] = "12/01/2018 19:52"
   
 trasformed_tweet = transform_row(my_tweet_parameters, tweets_parameters, padding)
+trasformed_tweet = [str(i) for i in trasformed_tweet[1:]]
 
-print(trasformed_tweet)
+par_names = ['en_long', 'en_short', 'no', 'urls','hashtags','ment','exc','emoj','perc_upp','words','avg lne','sdt_dev_len','min','max','time','day']
+
+tweet_dict = dict(zip(par_names,trasformed_tweet))
+df_tweet = pd.DataFrame(data =tweet_dict, index=[0])
+
+print(df_tweet)
+
 
 #pred = predict_tweet(trasformed_tweet, 'rbfSVC')   
 #print(pred)
