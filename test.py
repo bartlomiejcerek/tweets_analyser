@@ -30,7 +30,9 @@ my_tweet_parameters["date_time"] = "12/01/2018 19:52"
 trasformed_tweet = transform_row(my_tweet_parameters, tweets_parameters, padding)
 trasformed_tweet = [str(i) for i in trasformed_tweet[1:]]
 
-par_names = ['en_long', 'en_short', 'no', 'urls','hashtags','ment','exc','emoj','perc_upp','words','avg lne','sdt_dev_len','min','max','time','day']
+par_names = ['en_long', 'en_short', 'en_chars', 'no_let', 'urls_no', 'hashtag_no',' ment_no', \
+            '!_no', 'emojis_no', 'perc_of_up', 'no_words', 'average_word_len', \
+            'std_dev_word_len', 'min_word_len', 'max_word_len', 'time',' weekday']
 
 tweet_dict = dict(zip(par_names,trasformed_tweet))
 df_tweet = pd.DataFrame(data =tweet_dict, index=[0])
